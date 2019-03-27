@@ -8,14 +8,14 @@ class Point:
         self.y = y
 
 def bounding_box_of_points(
-    point_arr # [{"x": integer, "y": integer}, ...]
+    points # list of Point classes
     ):
     min_x = None
     min_y = None
     max_x = None
     max_y = None
 
-    for pt in point_arr:
+    for pt in points:
         if min_x is None or pt.x < min_x:
             min_x = pt.x
         if max_x is None or pt.x > max_x:
@@ -48,15 +48,15 @@ def convert_xml_labels_to_csv_lines(xml_text):
     for object_el in annotation_el.findall("object"):
         obj_name_string = object_el.find("name").text
 
-        point_coords = [] # [{"x": integer, "y": integer}, ...]
+        points = []
         
         for point_el in object_el.find("polygon").findall("pt"):
             x = int(point_el.find("x").text)
             y = int(point_el.find("y").text)
             
-            point_coords.append(Point(x, y))
+            points.append(Point(x, y))
         
-        min_x, min_y, max_x, max_y = bounding_box_of_points(point_coords)
+        min_x, min_y, max_x, max_y = bounding_box_of_points(points)
 
         csv_line = create_csv_line(
             file_path,
