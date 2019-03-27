@@ -1,5 +1,10 @@
 import xml.etree.ElementTree
 
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
 def bounding_box_of_points(
     point_arr # # [{"x": integer, "y": integer}, ...]
     ):
@@ -8,19 +13,18 @@ def bounding_box_of_points(
     max_x = None
     max_y = None
 
-    for point_info in point_arr:
-        if min_x is None or point_info["x"] < min_x:
-            min_x = point_info["x"]
-        if max_x is None or point_info["x"] > max_x:
-            max_x = point_info["x"]
+    for pt in point_arr:
+        if min_x is None or pt.x < min_x:
+            min_x = pt.x
+        if max_x is None or pt.x > max_x:
+            max_x = pt.x
         
-        if min_y is None or point_info["y"] < min_y:
-            min_y = point_info["y"]
-        if max_y is None or point_info["y"] > max_y:
-            max_y = point_info["y"]
+        if min_y is None or pt.y < min_y:
+            min_y = pt.y
+        if max_y is None or pt.y > max_y:
+            max_y = pt.y
         
     return min_x, min_y, max_x, max_y
-
 
 def convert_xml_labels_to_csv_lines(xml_text):
     annotation_el = xml.etree.ElementTree.fromstring(xml_text)
@@ -33,10 +37,9 @@ def convert_xml_labels_to_csv_lines(xml_text):
         point_coords = [] # [{"x": integer, "y": integer}, ...]
         
         for point_el in object_el.find("polygon").findall("pt"):
-            point_coords.append({
-                "x": int(point_el.find("x").text),
-                "y": int(point_el.find("y").text),
-            })
+            x = int(point_el.find("x").text)
+            y = int(point_el.find("y").text)
+            point_coords.append(Point(x, y))
         
         min_x, min_y, max_x, max_y = bounding_box_of_points(point_coords)
 
