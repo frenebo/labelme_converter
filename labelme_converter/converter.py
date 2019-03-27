@@ -8,7 +8,7 @@ class Point:
         self.y = y
 
 def bounding_box_of_points(
-    point_arr # # [{"x": integer, "y": integer}, ...]
+    point_arr # [{"x": integer, "y": integer}, ...]
     ):
     min_x = None
     min_y = None
@@ -29,13 +29,13 @@ def bounding_box_of_points(
     return min_x, min_y, max_x, max_y
 
 def create_csv_line(*element_strings):
-    output = io.StringIO()
+    csv_output = io.StringIO()
     
     # Line terminator is "" because only one line is going to be returned, without a newline
-    csv_writer = csv.writer(output, lineterminator="")
+    csv_writer = csv.writer(csv_output, lineterminator="")
     csv_writer.writerow(element_strings)
     
-    return output.getvalue()
+    return csv_output.getvalue()
 
 def convert_xml_labels_to_csv_lines(xml_text):
     annotation_el = xml.etree.ElementTree.fromstring(xml_text)
@@ -53,6 +53,7 @@ def convert_xml_labels_to_csv_lines(xml_text):
         for point_el in object_el.find("polygon").findall("pt"):
             x = int(point_el.find("x").text)
             y = int(point_el.find("y").text)
+            
             point_coords.append(Point(x, y))
         
         min_x, min_y, max_x, max_y = bounding_box_of_points(point_coords)
@@ -67,7 +68,7 @@ def convert_xml_labels_to_csv_lines(xml_text):
         )
         csv_lines.append(csv_line)
     
-    # One empty line for images with no annotations
+    # One placeholder line for images with no annotations. ex: "some_folder/image.jpg,,,,,"
     if len(csv_lines) == 0:
         return [
             create_csv_line(
