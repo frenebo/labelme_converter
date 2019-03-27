@@ -1,4 +1,6 @@
 import xml.etree.ElementTree
+import csv
+import io
 
 class Point:
     def __init__(self, x, y):
@@ -26,6 +28,15 @@ def bounding_box_of_points(
         
     return min_x, min_y, max_x, max_y
 
+def create_csv_line(*element_strings):
+    output = io.StringIO()
+    
+    # Line terminator is "" because only one line is going to be returned, without a newline
+    csv_writer = csv.writer(output, lineterminator="")
+    csv_writer.writerow(element_strings)
+    
+    return output.getvalue()
+
 def convert_xml_labels_to_csv_lines(xml_text):
     annotation_el = xml.etree.ElementTree.fromstring(xml_text)
     filename_string = annotation_el.find("filename").text
@@ -46,12 +57,12 @@ def convert_xml_labels_to_csv_lines(xml_text):
         
         min_x, min_y, max_x, max_y = bounding_box_of_points(point_coords)
 
-        csv_line = (
-            file_path + "," +
-            str(min_x) + "," +
-            str(min_y) + "," +
-            str(max_x) + "," +
-            str(max_y) + "," +
+        csv_line = create_csv_line(
+            file_path,
+            str(min_x),
+            str(min_y),
+            str(max_x),
+            str(max_y),
             obj_name_string
         )
         csv_lines.append(csv_line)
@@ -59,7 +70,14 @@ def convert_xml_labels_to_csv_lines(xml_text):
     # Empty line for images with no annotations
     if len(csv_lines) == 0:
         return [
-            file_path + ",,,,,"
+            create_csv_line(
+                file_path,
+                "",
+                "",
+                "",
+                "",
+                "",
+            )
         ]
     else:
         return csv_lines
