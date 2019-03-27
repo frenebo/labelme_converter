@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<annotation>
+   <filename>IMG_1234.jpg</filename>
+   <folder>some_folder</folder>
+   <source>
+      <sourceImage>The MIT-CSAIL database of objects and scenes</sourceImage>
+      <sourceAnnotation>LabelMe Webtool</sourceAnnotation>
+   </source>
+</annotation>

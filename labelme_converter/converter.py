@@ -29,6 +29,9 @@ def bounding_box_of_points(
 def convert_xml_labels_to_csv_lines(xml_text):
     annotation_el = xml.etree.ElementTree.fromstring(xml_text)
     filename_string = annotation_el.find("filename").text
+    folder_string = annotation_el.find("folder").text
+    file_path = folder_string + "/" + filename_string
+    
 
     csv_lines = []
     for object_el in annotation_el.findall("object"):
@@ -44,7 +47,7 @@ def convert_xml_labels_to_csv_lines(xml_text):
         min_x, min_y, max_x, max_y = bounding_box_of_points(point_coords)
 
         csv_line = (
-            filename_string + "," +
+            file_path + "," +
             str(min_x) + "," +
             str(min_y) + "," +
             str(max_x) + "," +
@@ -52,5 +55,10 @@ def convert_xml_labels_to_csv_lines(xml_text):
             obj_name_string
         )
         csv_lines.append(csv_line)
+    
+    if len(csv_lines) == 0:
+        return [
+            file_path + ",,,,,"
+        ]
     
     return csv_lines
