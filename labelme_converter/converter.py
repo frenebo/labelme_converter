@@ -56,9 +56,10 @@ def convert_xml_labels_to_csv_lines(xml_text):
         )
         csv_lines.append(csv_line)
     
+    # Empty line for images with no annotations
     if len(csv_lines) == 0:
         return [
             file_path + ",,,,,"
         ]
-    
-    return csv_lines
+    else:
+        return csv_lines
