@@ -41,8 +41,8 @@ def convert_xml_labels_to_csv_lines(xml_text):
     annotation_el = xml.etree.ElementTree.fromstring(xml_text)
     filename_string = annotation_el.find("filename").text
     folder_string = annotation_el.find("folder").text
-    file_path = folder_string + "/" + filename_string
-    
+    # file_path = folder_string + "/" + filename_string
+    file_path = filename_string # don't include folder path for now
 
     csv_lines = []
     for object_el in annotation_el.findall("object"):
